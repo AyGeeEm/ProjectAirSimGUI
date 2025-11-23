@@ -8,6 +8,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "UnrealSimLoader.h"
+#include "Menu/SettingsMenu.h"
 
 //
 #include "ProjectAirSimGameMode.generated.h"
@@ -25,4 +26,7 @@ class PROJECTAIRSIM_API AProjectAirSimGameMode : public AGameModeBase {
 
  private:
   AUnrealSimLoader UnrealSimLoader;
+  UPROPERTY(EditAnywhere, Category = "UI")
+  TSubclassOf<USettingsMenu> SettingsMenuClass;
+  USettingsMenu* SettingsMenuInstance = nullptr;
 };
