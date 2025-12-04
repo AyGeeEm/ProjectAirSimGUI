@@ -2,7 +2,8 @@
   "cmake.buildDirectory": "${workspaceFolder}/build/${variant:platform}/${variant:buildType}",
   "cmake.generator": "Ninja",
   "python.formatting.provider": "black",
-  "python.analysis.extraPaths": [
-    "client/python"
-  ]
+  "python.analysis.extraPaths": ["client/python"],
+  "files.associations": {
+    "*.rh": "cpp"
+  }
 }
