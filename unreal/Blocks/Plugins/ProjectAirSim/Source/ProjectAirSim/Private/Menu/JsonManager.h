@@ -30,4 +30,5 @@ class UJsonManager : public UObject
     bool SetNestedField(TSharedPtr<FJsonObject> RootObject, const FString& DotPath, const FString& Value);
     bool ExtractSceneConfigFromPython(const FString& PythonFilePath, FString& OutSceneConfigName);
     bool UpdateSceneConfigInPython(const FString& PythonFilePath, const FString& NewSceneConfigName);
+    static FString StripJsonComments(const FString& JsonString);
 };
