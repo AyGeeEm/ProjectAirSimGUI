@@ -16,6 +16,27 @@ class USettingsMenu : public UUserWidget
   public:
 	virtual void NativeConstruct() override;
 
+	FString GetID();
+    //bool SetID(const FVector& NewValue);
+
+	FString GetActorType();
+    //bool USettingsMenu::SetActorType();
+
+	FString GetActorName();
+    //bool SetActorName();
+
+
+	FString GetRobotConfig();
+    //bool SetRobotConfig();
+
+	FString GetClockType();
+
+    int64 GetClockStepNs();
+
+	int64 GetClockRealTimeUpdateRate();
+
+	bool GetClockPauseOnStart();
+
 	FVector GetOriginXYZ();
 	bool SetOriginXYZ(const FVector& NewValue);
 
@@ -24,6 +45,10 @@ class USettingsMenu : public UUserWidget
 
 	bool SetJsonFileName(const FString& NewJsonFileName);
 	bool SetPythonFileName(const FString& NewPythonFileName);
+
+	FString GetSceneType();
+	bool SetSceneType(const FString& NewValue);
+
 
 	void ReadJsonData();
 
@@ -52,10 +77,37 @@ class USettingsMenu : public UUserWidget
 
 	UPROPERTY(meta = (BindWidget))
     UEditableTextBox* RollInput;
-    UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidget))
     UEditableTextBox* PitchInput;
-    UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidget))
     UEditableTextBox* YawInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* SceneTypeInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* IDInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* ActorTypeInput;
+        
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* ActorNameInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* RobotConfigInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* ClockTypeInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* StepNsInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* RealTimeRateInput;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* PauseOnStartInput;
 
 
 	UPROPERTY(meta = (BindWidget))
