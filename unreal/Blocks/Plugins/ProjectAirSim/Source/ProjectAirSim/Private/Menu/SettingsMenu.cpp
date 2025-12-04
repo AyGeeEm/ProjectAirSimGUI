@@ -237,3 +237,189 @@ void USettingsMenu::KillCurrentProcess()
     else UE_LOG(LogTemp, Warning, TEXT("No current process active!"));
 
 }
+
+bool USettingsMenu::LoadRobotConfig()
+{
+    if (!JsonManager->LoadReferencedRobotConfig(ConfigFolderPath + JsonFileName, ConfigFolderPath, RobotConfigRoot, RobotConfigFileName)) {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load robot config from scene"));
+        return false;
+    }
+
+    UE_LOG(LogTemp, Log, TEXT("Loaded robot config: %s"), *RobotConfigFileName);
+    return true;
+}
+
+bool USettingsMenu::SaveRobotConfig()
+{
+    if (!RobotConfigRoot.IsValid() || RobotConfigFileName.IsEmpty()) {
+        UE_LOG(LogTemp, Warning, TEXT("No robot config loaded to save"));
+        return false;
+    }
+
+    return JsonManager->SaveJsonObject(ConfigFolderPath + RobotConfigFileName, RobotConfigRoot);
+}
+
+FVector USettingsMenu::GetSensorOrigin(const FString& SensorId)
+{
+    if (!RobotConfigRoot.IsValid()) {
+        LoadRobotConfig();
+    }
+
+    if (!RobotConfigRoot.IsValid()) {
+        return FVector::ZeroVector;
+    }
+
+    //Get sensors array
+    TArray<TSharedPtr<FJsonValue>> SensorsArray;
+    if (!JsonManager->GetObjectArray(RobotConfigRoot, TEXT("sensors"), SensorsArray)) {
+        return FVector::ZeroVector;
+    }
+
+    //Find sensor with matching ID
+    for (const auto& SensorValue : SensorsArray) {
+        TSharedPtr<FJsonObject> Sensor = SensorValue->AsObject();
+        if (!Sensor.IsValid()) {
+            continue;
+        }
+
+        FString Id;
+        if (JsonManager->GetStringField(Sensor, TEXT("id"), Id) && Id == SensorId) {
+            TSharedPtr<FJsonObject> Origin;
+            if (JsonManager->GetNestedObject(Sensor, TEXT("origin"), Origin)) {
+                FString XyzStr;
+                if (JsonManager->GetStringField(Origin, TEXT("xyz"), XyzStr)) {
+                    FVector Result;
+                    if (JsonManager->ParseVectorString(XyzStr, Result)) {
+                        return Result;
+                    }
+                }
+            }
+        }
+    }
+
+    return FVector::ZeroVector;
+}
+
+bool USettingsMenu::SetSensorOrigin(const FString& SensorId, const FVector& NewOrigin)
+{
+    if (!RobotConfigRoot.IsValid()) {
+        LoadRobotConfig();
+    }
+
+    if (!RobotConfigRoot.IsValid()) {
+        return false;
+    }
+
+    //Get sensors array
+    TArray<TSharedPtr<FJsonValue>> SensorsArray;
+    if (!JsonManager->GetObjectArray(RobotConfigRoot, TEXT("sensors"), SensorsArray)) {
+        return false;
+    }
+
+    //Find and update the sensor
+    for (const auto& SensorValue : SensorsArray) {
+        TSharedPtr<FJsonObject> Sensor = SensorValue->AsObject();
+        if (!Sensor.IsValid()) {
+            continue;
+        }
+
+        FString Id;
+        if (JsonManager->GetStringField(Sensor, TEXT("id"), Id) && Id == SensorId) {
+            TSharedPtr<FJsonObject> Origin;
+            if (JsonManager->GetNestedObject(Sensor, TEXT("origin"), Origin)) {
+                JsonManager->SetStringField(Origin, TEXT("xyz"), JsonManager->VectorToString(NewOrigin));
+                return SaveRobotConfig();
+            }
+        }
+    }
+
+    return false;
+}
+
+double USettingsMenu::GetSensorCaptureInterval(const FString& SensorId)
+{
+    if (!RobotConfigRoot.IsValid()) {
+        LoadRobotConfig();
+    }
+    if (!RobotConfigRoot.IsValid()) {
+        return 0.0;
+    }
+
+    TArray<TSharedPtr<FJsonValue>> SensorsArray;
+    if (!JsonManager->GetObjectArray(RobotConfigRoot, TEXT("sensors"), SensorsArray)) {
+        return 0.0;
+    }
+
+    for (const auto& SensorValue : SensorsArray) {
+        TSharedPtr<FJsonObject> Sensor = SensorValue->AsObject();
+        if (!Sensor.IsValid()) {
+            continue;
+        }
+
+        FString Id;
+        if (JsonManager->GetStringField(Sensor, TEXT("id"), Id) && Id == SensorId) {
+            double Interval = 0.0;
+            if (JsonManager->GetNumberField(Sensor, TEXT("capture-interval"), Interval)) {
+                return Interval;
+            }
+        }
+    }
+
+    return 0.0;
+}
+
+bool USettingsMenu::SetSensorCaptureInterval(const FString& SensorId, double Interval)
+{
+    if (!RobotConfigRoot.IsValid()) {
+        LoadRobotConfig();
+    }
+    if (!RobotConfigRoot.IsValid()) {
+        return false;
+    }
+
+    TArray<TSharedPtr<FJsonValue>> SensorsArray;
+    if (!JsonManager->GetObjectArray(RobotConfigRoot, TEXT("sensors"), SensorsArray)) {
+        return false;
+    }
+
+    for (const auto& SensorValue : SensorsArray) {
+        TSharedPtr<FJsonObject> Sensor = SensorValue->AsObject();
+        if (!Sensor.IsValid()) {
+            continue;
+        }
+
+        FString Id;
+        if (JsonManager->GetStringField(Sensor, TEXT("id"), Id) && Id == SensorId) {
+            JsonManager->SetNumberField(Sensor, TEXT("capture-interval"), Interval);
+            return SaveRobotConfig();
+        }
+    }
+
+    return false;
+}
+
+void USettingsMenu::AutoLoadConfigFromPython()
+{
+    FString SceneConfigName;
+    if (JsonManager->ExtractSceneConfigFromPython(PythonFolderPath + PythonFileName, SceneConfigName)) {
+        JsonFileName = SceneConfigName;
+        if (JsonFileNameInput) {
+            JsonFileNameInput->SetText(FText::FromString(JsonFileName));
+        }
+
+        ReadJsonData();
+        LoadRobotConfig();
+
+        UE_LOG(LogTemp, Log, TEXT("Auto-loaded config from Python: %s"), *SceneConfigName);
+    }
+}
+
+void USettingsMenu::OnPythonFileSelected()
+{
+    if (PythonFileNameInput) {
+        FString NewPythonFile = PythonFileNameInput->GetText().ToString();
+        if (SetPythonFileName(NewPythonFile)) {
+            AutoLoadConfigFromPython();
+        }
+    }
+}

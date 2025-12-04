@@ -27,6 +27,17 @@ class USettingsMenu : public UUserWidget
 
 	void ReadJsonData();
 
+	bool LoadRobotConfig();
+    bool SaveRobotConfig();
+
+    FVector GetSensorOrigin(const FString& SensorId);
+    bool SetSensorOrigin(const FString& SensorId, const FVector& NewOrigin);
+    double GetSensorCaptureInterval(const FString& SensorId);
+    bool SetSensorCaptureInterval(const FString& SensorId, double Interval);
+
+    void OnPythonFileSelected();
+    void AutoLoadConfigFromPython();
+
   private:
 	UPROPERTY()
 	UJsonManager* JsonManager;
@@ -67,6 +78,12 @@ class USettingsMenu : public UUserWidget
 	UPROPERTY(meta = (BindWidget))
     UButton* KillCurrentProcessButton;
 
+	UPROPERTY(meta = (BindWidget)) //ADD TO UMG WIDGET
+	UEditableTextBox* SensorFOVInput;
+
+	UPROPERTY(meta = (BindWidget)) //THIS ONE TOO
+	UEditableTextBox* PhysicsTypeInput;
+
 	UFUNCTION()
     void OnSaveClicked();
 
@@ -75,4 +92,7 @@ class USettingsMenu : public UUserWidget
 
 	UFUNCTION()
     void KillCurrentProcess();
+
+	TSharedPtr<FJsonObject> RobotConfigRoot;
+    FString RobotConfigFileName;
 };
