@@ -1,7 +1,7 @@
 #include "Menu/JsonManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
-#include "Misc/RegexUtils.h"
+//#include "Internationalization/Regex.h"
 
 bool UJsonManager::LoadJsonFile(const FString& RelativeFilePath, FString& OutJsonString)
 {
@@ -272,7 +272,7 @@ bool UJsonManager::ExtractSceneConfigFromPython(const FString& PythonFilePath, F
     UE_LOG(LogTemp, Warning, TEXT("No scene config reference found in Python file"));
     return false;
 }
-
+/*
 bool UJsonManager::UpdateSceneConfigInPython(const FString& PythonFilePath, const FString& NewSceneConfigName)
 {
     FString PythonContent;
@@ -299,3 +299,4 @@ bool UJsonManager::UpdateSceneConfigInPython(const FString& PythonFilePath, cons
     UE_LOG(LogTemp, Log, TEXT("Updated scene config in Python to: %s"), *NewSceneConfigName);
     return true;
 }
+*/

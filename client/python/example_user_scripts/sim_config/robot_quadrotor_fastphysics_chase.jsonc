@@ -338,7 +338,7 @@
       "capture-interval": 0.02,
       "capture-settings": [
         {
-          "image-type": 0,  // scene camera
+          "image-type": 0,
           "width": 400,
           "height": 225,
           "fov-degrees": 90,
@@ -349,7 +349,7 @@
           "target-gamma": 2.5
         },
         {
-          "image-type": 1,  // depth planar
+          "image-type": 1,
           "width": 400,
           "height": 225,
           "fov-degrees": 90,
@@ -359,7 +359,7 @@
           "compress": false
         },
         {
-          "image-type": 2,  // depth perspective
+          "image-type": 2,
           "width": 400,
           "height": 225,
           "fov-degrees": 90,
@@ -369,7 +369,7 @@
           "compress": false
         },
         {
-          "image-type": 3,  // segmentation
+          "image-type": 3,
           "width": 400,
           "height": 225,
           "fov-degrees": 90,
@@ -379,7 +379,7 @@
           "compress": false
         },
         {
-          "image-type": 4,  // depth vis
+          "image-type": 4,
           "width": 400,
           "height": 225,
           "fov-degrees": 90,
@@ -390,7 +390,7 @@
           "max-depth-meters": 100
         },
         {
-          "image-type": 5,  // disparity normalized
+          "image-type": 5,
           "width": 400,
           "height": 225,
           "fov-degrees": 90,
@@ -400,7 +400,7 @@
           "compress": false
         },
         {
-          "image-type": 6,  // surface normals
+          "image-type": 6,
           "width": 400,
           "height": 225,
           "fov-degrees": 90,

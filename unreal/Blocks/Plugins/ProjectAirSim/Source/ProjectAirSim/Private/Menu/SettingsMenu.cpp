@@ -11,7 +11,7 @@ void USettingsMenu::NativeConstruct()
     JsonManager = NewObject<UJsonManager>();
     ConfigFolderPath = TEXT("../../client/python/example_user_scripts/sim_config/"); //this path only works for those building from source
     PythonFolderPath = TEXT("C:\\Lee\\Repos\\AirSim\\ProjectAirSim\\client\\python\\example_user_scripts\\"); //REPLACE WITH YOURS
-    JsonFileName = TEXT("scene_basic_drone_chase.jsonc");
+    JsonFileName = TEXT("scene_basic_drone.jsonc");
     PythonFileName = TEXT("camera_pose.py");
     VirtualEnvActivatePath = TEXT("C:\\Lee\\Repos\\AirSim\\airsim-venv\\Scripts\\activate"); //SAME HERE
 
@@ -30,6 +30,7 @@ void USettingsMenu::NativeConstruct()
             KillCurrentProcessButton->OnClicked.AddDynamic(this, &USettingsMenu::KillCurrentProcess);
         }
         if (PythonFileNameInput) PythonFileNameInput->SetText(FText::FromString(PythonFileName));
+        OnPythonFileSelected();
         ReadJsonData();
     }
 }
