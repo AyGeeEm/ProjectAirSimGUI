@@ -1,0 +1,48 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "CaptureSettingsWidget.generated.h"
+
+class UCaptureSettings;
+
+UCLASS()
+class UCaptureSettingsWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+public:
+
+	void Init(UCaptureSettings* OwnerIn);
+
+	UFUNCTION()
+	void CommitImageType(const FText& Text, ETextCommit::Type CommitType);
+	UFUNCTION()
+	void CommitFOVDegrees(const FText& Text, ETextCommit::Type CommitType);
+	UFUNCTION()
+	void CommitWidth(const FText& Text, ETextCommit::Type CommitType);
+	UFUNCTION()
+	void CommitHeight(const FText& Text, ETextCommit::Type CommitType);
+	UFUNCTION()
+	void CommitMotionBlurAmount(const FText& Text, ETextCommit::Type CommitType);
+
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* ImageTypeDisplay;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* FOVDegreesDisplay;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* WidthDisplay;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* HeightDisplay;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* MotionBlurAmountDisplay;
+
+private:
+
+	UCaptureSettings* Owner;
+	
+};

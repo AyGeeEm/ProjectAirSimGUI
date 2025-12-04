@@ -3,6 +3,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Menu/JsonManager.h"
+#include "Menu/SceneConfig.h"
+#include "Menu/RobotConfig.h"
+#include "Menu/ActorSettingsWidget.h"
+#include "Menu/RobotConfigWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/Button.h"
 #include "SettingsMenu.generated.h"
@@ -13,86 +17,62 @@ class USettingsMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
-  public:
+public:
+
 	virtual void NativeConstruct() override;
 
-	FVector GetOriginXYZ();
-	bool SetOriginXYZ(const FVector& NewValue);
+	void OnFileSelected(const FString& FileName);
 
-	FVector GetOriginRPY();
-	bool SetOriginRPY(const FVector& NewValue);
+	bool ValidateFile(const FString& FileName);
 
-	bool SetJsonFileName(const FString& NewJsonFileName);
-	bool SetPythonFileName(const FString& NewPythonFileName);
+	bool LoadSceneConfig(const FString& FileName);
 
-	void ReadJsonData();
+	bool LoadRobotConfig(const FString& FileName);
+	
+	bool PopulateGUI();
 
-	bool LoadRobotConfig();
-    bool SaveRobotConfig();
-
-    FVector GetSensorOrigin(const FString& SensorId);
-    bool SetSensorOrigin(const FString& SensorId, const FVector& NewOrigin);
-    double GetSensorCaptureInterval(const FString& SensorId);
-    bool SetSensorCaptureInterval(const FString& SensorId, double Interval);
-
-    void OnPythonFileSelected();
-    void AutoLoadConfigFromPython();
-
-  private:
-	UPROPERTY()
-	UJsonManager* JsonManager;
+	UFUNCTION()
+	void ApplyChanges();
+	
 	FString ConfigFolderPath;
-	FString PythonFolderPath;
-	FString JsonFileName;
-	FString PythonFileName;
-	FString VirtualEnvActivatePath;
+
+	TMap<FString, USceneConfig*> SceneConfigMap;
+	TMap<FString, URobotConfig*> RobotConfigMap;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Actors")
+	TSubclassOf<UActorSettingsWidget> ActorSettingsWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Robot Config")
+	TSubclassOf<URobotConfigWidget> RobotConfigWidgetClass;
+
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* SceneConfigFileNameDisplay;
+
+	USceneConfig* SceneConfig;
+
+private:
+
 	FProcHandle CurrentPythonProcess;
+	
+    FString ScriptFolderPath;
+	FString PythonScriptName;
+	FString VirtualEnvActivatePath;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* JsonFileNameInput;
+    UVerticalBox* ActorSettingsContainer;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* PythonFileNameInput;
+    UVerticalBox* RobotConfigContainer;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* XInput;
-	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* YInput;
-	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* ZInput;
-
-	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* RollInput;
-    UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* PitchInput;
-    UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* YawInput;
-
+    UEditableTextBox* PythonScriptNameDisplay;
 
 	UPROPERTY(meta = (BindWidget))
     UButton* SaveButton;
 
 	UPROPERTY(meta = (BindWidget))
-    UButton* RunPythonScriptButton;
-
-	UPROPERTY(meta = (BindWidget))
-    UButton* KillCurrentProcessButton;
-
-	UPROPERTY(meta = (BindWidget)) //ADD TO UMG WIDGET
-	UEditableTextBox* SensorFOVInput;
-
-	UPROPERTY(meta = (BindWidget)) //THIS ONE TOO
-	UEditableTextBox* PhysicsTypeInput;
+    UButton* RunScriptButton;
 
 	UFUNCTION()
-    void OnSaveClicked();
-
-	UFUNCTION()
-    void RunPythonScript();
-
-	UFUNCTION()
-    void KillCurrentProcess();
-
-	TSharedPtr<FJsonObject> RobotConfigRoot;
-    FString RobotConfigFileName;
+    void RunScript();
 };
