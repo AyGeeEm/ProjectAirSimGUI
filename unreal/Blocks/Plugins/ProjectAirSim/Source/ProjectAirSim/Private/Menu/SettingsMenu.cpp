@@ -11,7 +11,9 @@ void USettingsMenu::NativeConstruct()
     JsonManager = NewObject<UJsonManager>();
     ConfigFolderPath = TEXT("../../client/python/example_user_scripts/sim_config/"); //this path only works for those building from source
     PythonFolderPath = TEXT("C:\\Users\\compu\\Documents\\GitHub\\ProjectAirSimGUI_New\\client\\python\\example_user_scripts\\"); //REPLACE WITH YOURS
-    JsonFileName = TEXT("scene_basic_drone_chase.jsonc");
+    JsonFileName = TEXT("robot_quadrotor_fastphysics_lidar.jsonc");
+    RobotConfigFileName = TEXT("robot_quadrotor_fastphysics_lidar.jsonc");
+     //GetRobotConfig();
     PythonFileName = TEXT("camera_pose.py");
     VirtualEnvActivatePath = TEXT("C:\\Users\\compu\\Documents\\GitHub\\ProjectAirSimGUI_New\\airsim-venv\\Scripts\\activate"); //SAME HERE
 
@@ -271,6 +273,133 @@ bool USettingsMenu::GetClockPauseOnStart() {
 }
 
 
+
+FString USettingsMenu::GetSensorID() {
+  UE_LOG(LogTemp, Warning, TEXT("Trying to load: %s"),
+         *(ConfigFolderPath + JsonFileName));
+
+  TSharedPtr<FJsonObject> Root;
+  if (!JsonManager->LoadJsonObject(ConfigFolderPath + JsonFileName, Root)) {
+    UE_LOG(LogTemp, Warning, TEXT("Robot Config not found!"));
+    return "";
+  }
+
+  // Must be an array
+  const TArray<TSharedPtr<FJsonValue>>* SensorsArray;
+  if (!Root->TryGetArrayField(TEXT("sensors"), SensorsArray) || !SensorsArray ||
+      SensorsArray->Num() == 0)
+    return "";
+
+  // First element of the array
+  TSharedPtr<FJsonObject> FirstSensor = (*SensorsArray)[0]->AsObject();
+  if (!FirstSensor.IsValid()) return "";
+
+  // Read "id" field
+  FString SensorID;
+  if (!JsonManager->GetStringField(FirstSensor, TEXT("id"), SensorID))
+    return "";
+
+  return SensorID;
+}
+
+TSharedPtr<FJsonObject> USettingsMenu::GetFirstSensor() {
+  TSharedPtr<FJsonObject> Root;
+  if (!JsonManager->LoadJsonObject(ConfigFolderPath + JsonFileName, Root))
+    return nullptr;
+
+  const TArray<TSharedPtr<FJsonValue>>* SensorsArray;
+  if (!Root->TryGetArrayField(TEXT("sensors"), SensorsArray) ||
+      SensorsArray->Num() == 0)
+    return nullptr;
+
+  TSharedPtr<FJsonObject> FirstSensor = (*SensorsArray)[0]->AsObject();
+  return FirstSensor;
+}
+
+FString USettingsMenu::GetSensorType() {
+  TSharedPtr<FJsonObject> Sensor = GetFirstSensor();
+  if (!Sensor.IsValid()) return "";
+
+  FString Value;
+  if (!JsonManager->GetStringField(Sensor, TEXT("type"), Value)) return "";
+
+  return Value;
+}
+
+bool USettingsMenu::GetSensorEnabled() {
+  TSharedPtr<FJsonObject> Sensor = GetFirstSensor();
+  if (!Sensor.IsValid()) return false;
+
+  bool Enabled = false;
+  if (!Sensor->TryGetBoolField(TEXT("enabled"), Enabled)) return false;
+
+  return Enabled;
+}
+
+float USettingsMenu::GetSensorCaptureInterval() {
+  TSharedPtr<FJsonObject> Sensor = GetFirstSensor();
+  if (!Sensor.IsValid()) return 0.f;
+
+  double Interval = 0;
+  if (!Sensor->TryGetNumberField(TEXT("capture-interval"), Interval))
+    return 0.f;
+
+  return (float)Interval;
+}
+
+TSharedPtr<FJsonObject> USettingsMenu::GetFirstCaptureSettings() {
+  TSharedPtr<FJsonObject> Sensor = GetFirstSensor();
+  if (!Sensor.IsValid()) return nullptr;
+
+  const TArray<TSharedPtr<FJsonValue>>* SettingsArray;
+  if (!Sensor->TryGetArrayField(TEXT("capture-settings"), SettingsArray) ||
+      SettingsArray->Num() == 0)
+    return nullptr;
+
+  return (*SettingsArray)[0]->AsObject();
+}
+
+float USettingsMenu::GetSensorFOV() {
+  TSharedPtr<FJsonObject> CS = GetFirstCaptureSettings();
+  if (!CS.IsValid()) return 0.f;
+
+  double FOV = 0;
+  if (!CS->TryGetNumberField(TEXT("fov-degrees"), FOV)) return 0.f;
+
+  return (float)FOV;
+}
+
+int32 USettingsMenu::GetSensorWidth() {
+  TSharedPtr<FJsonObject> CS = GetFirstCaptureSettings();
+  if (!CS.IsValid()) return 0;
+
+  int32 Width = 0;
+  if (!CS->TryGetNumberField(TEXT("width"), Width)) return 0;
+
+  return Width;
+}
+
+int32 USettingsMenu::GetSensorHeight() {
+  TSharedPtr<FJsonObject> CS = GetFirstCaptureSettings();
+  if (!CS.IsValid()) return 0;
+
+  int32 Height = 0;
+  if (!CS->TryGetNumberField(TEXT("height"), Height)) return 0;
+
+  return Height;
+}
+
+bool USettingsMenu::GetSensorMotionBlur() {
+  TSharedPtr<FJsonObject> CS = GetFirstCaptureSettings();
+  if (!CS.IsValid()) return false;
+
+  bool MotionBlur = false;
+  CS->TryGetBoolField(TEXT("motion-blur"), MotionBlur);  // won't crash
+
+  return MotionBlur;
+}
+
+
 // Get the scene type from the JSON configuration file
 FString USettingsMenu::GetSceneType()
 {
@@ -415,6 +544,38 @@ void USettingsMenu::ReadJsonData()
     if (PauseOnStartInput)
       PauseOnStartInput->SetText(
           FText::FromString(bPauseOnStart ? "true" : "false"));
+
+    FString SensorID = GetSensorID();
+    if (SensorIDInput) SensorIDInput->SetText(FText::FromString(SensorID));
+
+
+    FString SensorType = GetSensorType();
+    if (SensorTypeInput)
+      SensorTypeInput->SetText(FText::FromString(SensorType));
+
+    bool Enabled = GetSensorEnabled();
+    if (SensorEnabledInput)
+      SensorEnabledInput->SetText(
+          FText::FromString(Enabled ? "true" : "false"));
+
+    float FOV = GetSensorFOV();
+    if (SensorFOVInput) SensorFOVInput->SetText(FText::AsNumber(FOV));
+
+    int32 Width = GetSensorWidth();
+    if (SensorWidthInput) SensorWidthInput->SetText(FText::AsNumber(Width));
+
+    int32 Height = GetSensorHeight();
+    if (SensorHeightInput) SensorHeightInput->SetText(FText::AsNumber(Height));
+
+    bool MotionBlur = GetSensorMotionBlur();
+    if (SensorMotionBlurInput)
+      SensorMotionBlurInput->SetText(
+          FText::FromString(MotionBlur ? "true" : "false"));
+
+    float Interval = GetSensorCaptureInterval();
+    if (CaptureIntervalInput)
+      CaptureIntervalInput->SetText(FText::AsNumber(Interval));
+
 
     
     if (JsonFileNameInput) JsonFileNameInput->SetText(FText::FromString(JsonFileName));
