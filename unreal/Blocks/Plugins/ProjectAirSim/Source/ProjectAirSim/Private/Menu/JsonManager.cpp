@@ -19,6 +19,7 @@ bool UJsonManager::LoadJsonObject(const FString& RelativeFilePath, TSharedPtr<FJ
 {
     FString JsonString;
     if (!LoadJsonFile(RelativeFilePath, JsonString)) return false;
+    JsonString = StripJsonComments(JsonString);
     TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
     return FJsonSerializer::Deserialize(Reader, OutObject);
 }
@@ -299,4 +300,58 @@ bool UJsonManager::UpdateSceneConfigInPython(const FString& PythonFilePath, cons
     UE_LOG(LogTemp, Log, TEXT("Updated scene config in Python to: %s"), *NewSceneConfigName);
     return true;
 }
-*/
+
+FString UJsonManager::StripJsonComments(const FString& JsonString) {
+    FString Result;
+    Result.Reserve(JsonString.Len());
+
+    bool bInString = false;
+    bool bInSingleLineComment = false;
+    bool bInMultiLineComment = false;
+
+    for (int32 i = 0; i < JsonString.Len(); i++) {
+        TCHAR Current = JsonString[i];
+        TCHAR Next = (i + 1 < JsonString.Len()) ? JsonString[i + 1] : '\0';
+
+        //Handle string literals
+        if (!bInSingleLineComment && !bInMultiLineComment) {
+            if (Current == '"' && (i == 0 || JsonString[i - 1] != '\\')) {
+                bInString = !bInString;
+            }
+        }
+
+        //Comment start
+        if (!bInString && !bInSingleLineComment && !bInMultiLineComment) {
+            if (Current == '/' && Next == '/') {
+                bInSingleLineComment = true;
+                i++;
+                continue;
+            } else if (Current == '/' && Next == '*') {
+                bInMultiLineComment = true;
+                i++;
+                continue;
+            }
+        }
+
+        //Comment end
+        if (bInSingleLineComment) {
+            if (Current == '\n' || Current == '\r') {
+                bInSingleLineComment = false;
+                Result.AppendChar(Current);
+            }
+            continue;
+        }
+
+        if (bInMultiLineComment) {
+            if (Current == '*' && Next == '/') {
+                bInMultiLineComment = false;
+                i++;
+            }
+            continue;
+        }
+
+        Result.AppendChar(Current);
+    }
+
+    return Result;
+}
