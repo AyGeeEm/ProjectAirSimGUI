@@ -300,7 +300,7 @@ bool UJsonManager::UpdateSceneConfigInPython(const FString& PythonFilePath, cons
     UE_LOG(LogTemp, Log, TEXT("Updated scene config in Python to: %s"), *NewSceneConfigName);
     return true;
 }
-
+*/
 FString UJsonManager::StripJsonComments(const FString& JsonString) {
     FString Result;
     Result.Reserve(JsonString.Len());
