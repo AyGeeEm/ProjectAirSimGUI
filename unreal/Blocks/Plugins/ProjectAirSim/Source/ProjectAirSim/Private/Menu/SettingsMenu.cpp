@@ -8,7 +8,7 @@ void USettingsMenu::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    ConfigFolderPath = "";
+    ConfigFolder = "sim_config\\";
     ScriptFolderPath = "";
     PythonScriptName = "";
     VirtualEnvActivatePath = "";
@@ -35,7 +35,6 @@ void USettingsMenu::SetActivatePath()
 
 void USettingsMenu::SelectPythonScript()
 {
-    ConfigFolderPath = TEXT("../../client/python/example_user_scripts/sim_config/");
     ScriptFolderPath = TEXT("C:\\Lee\\Repos\\AirSim\\ProjectAirSim\\client\\python\\example_user_scripts\\");
     OnFileSelected("hello_drone.py");
 }
@@ -144,7 +143,7 @@ bool USettingsMenu::LoadSceneConfig(const FString& FileName)
     else
     {
         TSharedPtr<FJsonObject> Root;
-        if (!UJsonManager::LoadJsonObject(ConfigFolderPath + FileName, Root)) 
+        if (!UJsonManager::LoadJsonObject(ScriptFolderPath + ConfigFolder + FileName, Root)) 
         {
         	UE_LOG(LogTemp, Warning, TEXT("Could not load Json: %s"), *(FileName));
         	return false;
@@ -162,7 +161,7 @@ bool USettingsMenu::LoadRobotConfig(const FString& FileName)
     if (!RobotConfigMap.Contains(FileName))
     {
         TSharedPtr<FJsonObject> Root;
-        if (!UJsonManager::LoadJsonObject(ConfigFolderPath + FileName, Root)) 
+        if (!UJsonManager::LoadJsonObject(ScriptFolderPath + ConfigFolder + FileName, Root)) 
         {
         	UE_LOG(LogTemp, Warning, TEXT("Could not load Json: %s"), *(FileName));
         	return false;

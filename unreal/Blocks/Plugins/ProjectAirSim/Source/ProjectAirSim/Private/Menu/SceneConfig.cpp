@@ -57,5 +57,5 @@ void USceneConfig::ApplyChanges()
 		Actor->ApplyChanges();
     }
 
-	UJsonManager::SaveJsonObject(Menu->ConfigFolderPath + FileName, Root);
+	UJsonManager::SaveJsonObject(Menu->ScriptFolderPath + Menu->ConfigFolder + FileName, Root);
 }

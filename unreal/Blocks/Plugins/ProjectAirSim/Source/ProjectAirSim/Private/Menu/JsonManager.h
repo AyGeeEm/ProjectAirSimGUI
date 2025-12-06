@@ -12,10 +12,10 @@ class UJsonManager : public UObject
 	GENERATED_BODY()
 
   public:
-	static bool LoadJsonFile(const FString& RelativeFilePath, FString& OutJsonString);
-	static bool SaveJsonFile(const FString& RelativeFilePath, const FString& JsonString);
-	static bool LoadJsonObject(const FString& RelativeFilePath, TSharedPtr<FJsonObject>& OutObject);
-	static bool SaveJsonObject(const FString& RelativeFilePath, const TSharedPtr<FJsonObject>& JsonObject);
+	static bool LoadJsonFile(const FString& FilePath, FString& OutJsonString);
+	static bool SaveJsonFile(const FString& FilePath, const FString& JsonString);
+	static bool LoadJsonObject(const FString& FilePath, TSharedPtr<FJsonObject>& OutObject);
+	static bool SaveJsonObject(const FString& FilePath, const TSharedPtr<FJsonObject>& JsonObject);
 	static bool SetNumberField(TSharedPtr<FJsonObject> JsonObject, const FString& FieldName, double Value);
 	static bool GetNumberField(TSharedPtr<FJsonObject> JsonObject, const FString& FieldName, double& OutValue);
 	static bool ParseVectorString(const FString& VectorString, FVector& OutVector);

@@ -59,5 +59,5 @@ void URobotConfig::ApplyChanges()
 		Sensor->ApplyChanges();
 	}
 
-	UJsonManager::SaveJsonObject(Menu->ConfigFolderPath + FileName, Root);
+	UJsonManager::SaveJsonObject(Menu->ScriptFolderPath + Menu->ConfigFolder + FileName, Root);
 }

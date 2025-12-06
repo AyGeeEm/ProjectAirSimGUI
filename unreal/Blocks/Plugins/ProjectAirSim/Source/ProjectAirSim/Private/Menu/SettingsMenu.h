@@ -45,7 +45,8 @@ public:
 	UFUNCTION()
 	void ApplyChanges();
 	
-	FString ConfigFolderPath;
+	FString ScriptFolderPath;
+	FString ConfigFolder;
 
 	TMap<FString, USceneConfig*> SceneConfigMap;
 	TMap<FString, URobotConfig*> RobotConfigMap;
@@ -69,7 +70,7 @@ private:
 
 	FProcHandle CurrentPythonProcess;
 	
-    FString ScriptFolderPath;
+    
 	FString PythonScriptName;
 	FString VirtualEnvActivatePath;
 

@@ -3,33 +3,31 @@
 #include "Misc/Paths.h"
 #include <cmath>
 
-bool UJsonManager::LoadJsonFile(const FString& RelativeFilePath, FString& OutJsonString)
+bool UJsonManager::LoadJsonFile(const FString& FilePath, FString& OutJsonString)
 {
-    const FString FullPath = FPaths::ProjectDir() / RelativeFilePath;
-    return FFileHelper::LoadFileToString(OutJsonString, *FullPath);
+    return FFileHelper::LoadFileToString(OutJsonString, *FilePath);
 }
 
-bool UJsonManager::SaveJsonFile(const FString& RelativeFilePath, const FString& JsonString)
+bool UJsonManager::SaveJsonFile(const FString& FilePath, const FString& JsonString)
 {
-    const FString FullPath = FPaths::ProjectDir() / RelativeFilePath;
-    return FFileHelper::SaveStringToFile(JsonString, *FullPath);
+    return FFileHelper::SaveStringToFile(JsonString, *FilePath);
 }
 
-bool UJsonManager::LoadJsonObject(const FString& RelativeFilePath, TSharedPtr<FJsonObject>& OutObject)
+bool UJsonManager::LoadJsonObject(const FString& FilePath, TSharedPtr<FJsonObject>& OutObject)
 {
     FString JsonString;
-    if (!LoadJsonFile(RelativeFilePath, JsonString)) return false;
+    if (!LoadJsonFile(FilePath, JsonString)) return false;
     JsonString = StripJsonComments(JsonString);
     TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
     return FJsonSerializer::Deserialize(Reader, OutObject);
 }
 
-bool UJsonManager::SaveJsonObject(const FString& RelativeFilePath, const TSharedPtr<FJsonObject>& JsonObject)
+bool UJsonManager::SaveJsonObject(const FString& FilePath, const TSharedPtr<FJsonObject>& JsonObject)
 {
     FString JsonString;
     TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
     if (!FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer)) return false;
-    return SaveJsonFile(RelativeFilePath, JsonString);
+    return SaveJsonFile(FilePath, JsonString);
 }
 
 bool UJsonManager::SetNumberField(TSharedPtr<FJsonObject> JsonObject, const FString& FieldName, double Value)
