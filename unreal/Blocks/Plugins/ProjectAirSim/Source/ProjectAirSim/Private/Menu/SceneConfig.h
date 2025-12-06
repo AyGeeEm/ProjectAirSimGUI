@@ -1,7 +1,9 @@
 #pragma once
+
 #include "CoreMinimal.h"
 #include "Menu/JsonManager.h"
 #include "Menu/ActorSettings.h"
+
 #include "SceneConfig.generated.h"
 
 UCLASS()
@@ -13,6 +15,7 @@ class USceneConfig : public UObject
 public:
 
 	void Init(TSharedPtr<FJsonObject> RootIn, const FString& FileNameIn, USettingsMenu* MenuIn);
+
 	bool LoadActors();
 
 	void PopulateGUI();

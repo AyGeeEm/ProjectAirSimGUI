@@ -3,6 +3,7 @@
 #include "Menu/JsonManager.h"
 #include "Menu/CaptureSettings.h"
 #include "Menu/SensorSettingsWidget.h"
+
 #include "SensorSettings.generated.h"
 
 UCLASS()
@@ -25,6 +26,7 @@ public:
 	bool LoadCaptureInterval();
     bool LoadCaptureSettings();
 
+	UPROPERTY()
 	USensorSettingsWidget* Widget;
 
 	UPROPERTY()
@@ -45,5 +47,6 @@ private:
 
 	TSharedPtr<FJsonObject> Root;
 
+	UPROPERTY()
 	TArray<UCaptureSettings*> CaptureSettings;
 };

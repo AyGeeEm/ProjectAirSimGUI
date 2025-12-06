@@ -5,37 +5,10 @@ void UCaptureSettingsWidget::Init(UCaptureSettings* OwnerIn)
 {
 	this->Owner = OwnerIn;
 
-	ImageTypeDisplay->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitImageType);
-	FOVDegreesDisplay->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitFOVDegrees);
-	WidthDisplay->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitWidth);
-	HeightDisplay->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitHeight);
-	MotionBlurAmountDisplay->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitMotionBlurAmount);
-}
-
-void UCaptureSettingsWidget::CommitImageType(const FText& Text, ETextCommit::Type CommitType)
-{
-	if (CommitType == ETextCommit::OnEnter || CommitType == ETextCommit::OnUserMovedFocus)
-    {
-        if (!Text.IsEmpty())
-		{
-			float Value;
-			if (FDefaultValueHelper::ParseFloat(Text.ToString(), Value) && Text.ToString().IsNumeric())
-			{
-				if (Value == 0 ||
-					Value == 1 ||
-					Value == 2 ||
-					Value == 3 ||
-					Value == 4 ||
-					Value == 5 ||
-					Value == 6)
-				{
-					Owner->ImageType = Value;
-				}
-				
-			}
-		}
-    }
-	ImageTypeDisplay->SetText(FText::AsNumber(Owner->ImageType));
+	FOVDegreesTextBox->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitFOVDegrees);
+	WidthTextBox->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitWidth);
+	HeightTextBox->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitHeight);
+	MotionBlurAmountTextBox->OnTextCommitted.AddDynamic(this, &UCaptureSettingsWidget::CommitMotionBlurAmount);
 }
 
 void UCaptureSettingsWidget::CommitFOVDegrees(const FText& Text, ETextCommit::Type CommitType)
@@ -55,7 +28,7 @@ void UCaptureSettingsWidget::CommitFOVDegrees(const FText& Text, ETextCommit::Ty
 			}
 		}
     }
-	FOVDegreesDisplay->SetText(FText::AsNumber(Owner->FOVDegrees));
+	FOVDegreesTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->FOVDegrees)));
 }
 
 void UCaptureSettingsWidget::CommitWidth(const FText& Text, ETextCommit::Type CommitType)
@@ -71,11 +44,10 @@ void UCaptureSettingsWidget::CommitWidth(const FText& Text, ETextCommit::Type Co
 				{
 					Owner->Width = Value;
 				}
-				
 			}
 		}
     }
-	WidthDisplay->SetText(FText::AsNumber(Owner->Width));
+	WidthTextBox->SetText(FText::FromString(FString::FromInt(Owner->Width)));
 }
 
 void UCaptureSettingsWidget::CommitHeight(const FText& Text, ETextCommit::Type CommitType)
@@ -95,7 +67,7 @@ void UCaptureSettingsWidget::CommitHeight(const FText& Text, ETextCommit::Type C
 			}
 		}
     }
-	HeightDisplay->SetText(FText::AsNumber(Owner->Height));
+	HeightTextBox->SetText(FText::FromString(FString::FromInt(Owner->Height)));
 }
 
 void UCaptureSettingsWidget::CommitMotionBlurAmount(const FText& Text, ETextCommit::Type CommitType)
@@ -115,5 +87,5 @@ void UCaptureSettingsWidget::CommitMotionBlurAmount(const FText& Text, ETextComm
 			}
 		}
     }
-	MotionBlurAmountDisplay->SetText(FText::AsNumber(Owner->MotionBlurAmount));
+	MotionBlurAmountTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->MotionBlurAmount)));
 }

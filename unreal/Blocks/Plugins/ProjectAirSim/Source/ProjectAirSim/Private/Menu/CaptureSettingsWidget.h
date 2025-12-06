@@ -15,8 +15,6 @@ public:
 	void Init(UCaptureSettings* OwnerIn);
 
 	UFUNCTION()
-	void CommitImageType(const FText& Text, ETextCommit::Type CommitType);
-	UFUNCTION()
 	void CommitFOVDegrees(const FText& Text, ETextCommit::Type CommitType);
 	UFUNCTION()
 	void CommitWidth(const FText& Text, ETextCommit::Type CommitType);
@@ -25,21 +23,23 @@ public:
 	UFUNCTION()
 	void CommitMotionBlurAmount(const FText& Text, ETextCommit::Type CommitType);
 
+	UPROPERTY(meta = (BindWidget))
+    UTextBlock* ImageTypeText;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* ImageTypeDisplay;
+    UEditableTextBox* FOVDegreesTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* FOVDegreesDisplay;
+    UEditableTextBox* WidthTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* WidthDisplay;
+    UEditableTextBox* HeightTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* HeightDisplay;
+    UVerticalBox* MotionBlurAmountContainer;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* MotionBlurAmountDisplay;
+    UEditableTextBox* MotionBlurAmountTextBox;
 
 private:
 

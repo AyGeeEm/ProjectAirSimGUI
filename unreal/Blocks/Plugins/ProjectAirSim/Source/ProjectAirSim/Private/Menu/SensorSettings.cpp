@@ -137,13 +137,17 @@ bool USensorSettings::LoadCaptureSettings()
 
 void USensorSettings::PopulateGUI()
 {
-	if (Widget->IDDisplay) Widget->IDDisplay->SetText(FText::FromString(ID));
-	if (Widget->TypeDisplay) Widget->TypeDisplay->SetText(FText::FromString(Type));
-	if (Widget->EnabledDisplay) Widget->EnabledDisplay->SetText(FText::FromString(Enabled ? TEXT("true") : TEXT("false")));
-	if (Widget->CaptureIntervalDisplay) Widget->CaptureIntervalDisplay->SetText(FText::AsNumber(CaptureInterval));
+	if (Widget->IDText) Widget->IDText->SetText(FText::FromString(ID));
+	if (Widget->TypeTextBox) Widget->TypeTextBox->SetText(FText::FromString(Type));
+	if (Widget->EnabledCheckBox) Widget->EnabledCheckBox->SetIsChecked(Enabled);
+	if (CaptureInterval == -1.f) Widget->CaptureIntervalContainer->SetVisibility(ESlateVisibility::Collapsed);
+	else if (Widget->CaptureIntervalTextBox) Widget->CaptureIntervalTextBox->SetText(FText::FromString(FString::SanitizeFloat(CaptureInterval)));
+
+	Widget->CaptureSettingsContainer->ClearChildren();
 
 	for (auto CaptureSetting : CaptureSettings) 
 	{
+		if (Widget->EACaptureSettings) Widget->EACaptureSettings->SetVisibility(ESlateVisibility::Visible);
 		CaptureSetting->Widget = CreateWidget<UCaptureSettingsWidget>(Widget, Widget->CaptureSettingsWidgetClass);
 		CaptureSetting->Widget->Init(CaptureSetting);
         Widget->CaptureSettingsContainer->AddChild(CaptureSetting->Widget);

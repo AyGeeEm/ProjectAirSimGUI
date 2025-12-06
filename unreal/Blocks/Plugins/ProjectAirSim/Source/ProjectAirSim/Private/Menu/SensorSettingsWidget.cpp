@@ -5,22 +5,9 @@ void USensorSettingsWidget::Init(USensorSettings* OwnerIn)
 {
 	this->Owner = OwnerIn;
 
-	IDDisplay->OnTextCommitted.AddDynamic(this, &USensorSettingsWidget::CommitID);
-	TypeDisplay->OnTextCommitted.AddDynamic(this, &USensorSettingsWidget::CommitType);
-	EnabledDisplay->OnTextCommitted.AddDynamic(this, &USensorSettingsWidget::CommitEnabled);
-	CaptureIntervalDisplay->OnTextCommitted.AddDynamic(this, &USensorSettingsWidget::CommitCaptureInterval);
-}
-
-void USensorSettingsWidget::CommitID(const FText& Text, ETextCommit::Type CommitType)
-{
-	if (CommitType == ETextCommit::OnEnter || CommitType == ETextCommit::OnUserMovedFocus)
-    {
-        if (!Text.IsEmpty())
-		{
-			Owner->ID = Text.ToString();
-		}
-    }
-	IDDisplay->SetText(FText::FromString(Owner->ID));
+	TypeTextBox->OnTextCommitted.AddDynamic(this, &USensorSettingsWidget::CommitType);
+	EnabledCheckBox->OnCheckStateChanged.AddDynamic(this, &USensorSettingsWidget::CommitEnabled);
+	CaptureIntervalTextBox->OnTextCommitted.AddDynamic(this, &USensorSettingsWidget::CommitCaptureInterval);
 }
 
 void USensorSettingsWidget::CommitType(const FText& Text, ETextCommit::Type ETextCommitType)
@@ -43,25 +30,14 @@ void USensorSettingsWidget::CommitType(const FText& Text, ETextCommit::Type ETex
 			}
 		}
     }
-	TypeDisplay->SetText(FText::FromString(Owner->Type));
+	TypeTextBox->SetText(FText::FromString(Owner->Type));
 }
 
-void USensorSettingsWidget::CommitEnabled(const FText& Text, ETextCommit::Type CommitType)
+void USensorSettingsWidget::CommitEnabled(bool bIsChecked) 
 {
-	if (CommitType == ETextCommit::OnEnter || CommitType == ETextCommit::OnUserMovedFocus)
-    {
-        if (!Text.IsEmpty())
-		{
-			if (Text.ToString().ToLower().Equals("true") ||
-				Text.ToString().ToLower().Equals("false"))
-			{
-				Owner->Enabled = Text.ToString().ToLower().Equals("true");
-			}
-		}
-    }
-	EnabledDisplay->SetText(FText::FromString(Owner->Enabled ? TEXT("true") : TEXT("false")));
+	Owner->Enabled = bIsChecked;
+	EnabledCheckBox->SetIsChecked(bIsChecked);
 }
-
 
 void USensorSettingsWidget::CommitCaptureInterval(const FText& Text, ETextCommit::Type CommitType)
 {
@@ -76,5 +52,5 @@ void USensorSettingsWidget::CommitCaptureInterval(const FText& Text, ETextCommit
 			}
 		}
     }
-	CaptureIntervalDisplay->SetText(FText::AsNumber(Owner->CaptureInterval));
+	CaptureIntervalTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->CaptureInterval)));
 }

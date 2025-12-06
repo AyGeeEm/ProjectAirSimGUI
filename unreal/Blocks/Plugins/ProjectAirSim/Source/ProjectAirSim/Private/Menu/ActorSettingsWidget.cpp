@@ -4,30 +4,15 @@
 void UActorSettingsWidget::Init(UActorSettings* OwnerIn) 
 {
 	this->Owner = OwnerIn;
-
-	NameDisplay->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitName);
 	
-	XDisplay->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitX);
-	YDisplay->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitY);
-	ZDisplay->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitZ);
+	XTextBox->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitX);
+	YTextBox->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitY);
+	ZTextBox->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitZ);
 	
-	RollDisplay->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitRoll);
-	PitchDisplay->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitPitch);
-	YawDisplay->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitYaw);
+	RollTextBox->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitRoll);
+	PitchTextBox->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitPitch);
+	YawTextBox->OnTextCommitted.AddDynamic(this, &UActorSettingsWidget::CommitYaw);
 }
-
-void UActorSettingsWidget::CommitName(const FText& Text, ETextCommit::Type CommitType)
-{
-	if (CommitType == ETextCommit::OnEnter || CommitType == ETextCommit::OnUserMovedFocus)
-    {
-        if (!Text.IsEmpty())
-		{
-			Owner->Name = Text.ToString();
-		}
-    }
-	NameDisplay->SetText(FText::FromString(Owner->Name));
-}
-
 
 void UActorSettingsWidget::CommitX(const FText& Text, ETextCommit::Type CommitType)
 {
@@ -43,7 +28,7 @@ void UActorSettingsWidget::CommitX(const FText& Text, ETextCommit::Type CommitTy
 			}
 		}
     }
-	XDisplay->SetText(FText::AsNumber(Owner->XYZ.X));
+	XTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->XYZ.X)));
 }
 
 void UActorSettingsWidget::CommitY(const FText& Text, ETextCommit::Type CommitType)
@@ -60,7 +45,7 @@ void UActorSettingsWidget::CommitY(const FText& Text, ETextCommit::Type CommitTy
 			}
 		}
     }
-	YDisplay->SetText(FText::AsNumber(Owner->XYZ.Y));
+	YTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->XYZ.Y)));
 }
 
 void UActorSettingsWidget::CommitZ(const FText& Text, ETextCommit::Type CommitType)
@@ -77,7 +62,7 @@ void UActorSettingsWidget::CommitZ(const FText& Text, ETextCommit::Type CommitTy
 			}
 		}
     }
-	ZDisplay->SetText(FText::AsNumber(Owner->XYZ.Z));
+	ZTextBox->SetText(FText::FromString(FString::FromInt(Owner->XYZ.Z)));
 }
 
 void UActorSettingsWidget::CommitRoll(const FText& Text, ETextCommit::Type CommitType)
@@ -94,7 +79,7 @@ void UActorSettingsWidget::CommitRoll(const FText& Text, ETextCommit::Type Commi
 			}
 		}
     }
-	RollDisplay->SetText(FText::AsNumber(Owner->RPYDeg.X));
+	RollTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->RPYDeg.X)));
 }
 
 void UActorSettingsWidget::CommitPitch(const FText& Text, ETextCommit::Type CommitType)
@@ -111,7 +96,7 @@ void UActorSettingsWidget::CommitPitch(const FText& Text, ETextCommit::Type Comm
 			}
 		}
     }
-	PitchDisplay->SetText(FText::AsNumber(Owner->RPYDeg.Y));
+	PitchTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->RPYDeg.Y)));
 }
 
 void UActorSettingsWidget::CommitYaw(const FText& Text, ETextCommit::Type CommitType)
@@ -128,5 +113,5 @@ void UActorSettingsWidget::CommitYaw(const FText& Text, ETextCommit::Type Commit
 			}
 		}
     }
-	YawDisplay->SetText(FText::AsNumber(Owner->RPYDeg.Z));
+	YawTextBox->SetText(FText::FromString(FString::SanitizeFloat(Owner->RPYDeg.Z)));
 }

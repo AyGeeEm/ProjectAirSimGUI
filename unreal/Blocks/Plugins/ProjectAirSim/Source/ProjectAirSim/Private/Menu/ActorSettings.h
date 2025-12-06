@@ -1,8 +1,11 @@
 #pragma once
+
 #include "CoreMinimal.h"
+
 #include "Menu/JsonManager.h"
 #include "Menu/RobotConfig.h"
 #include "Menu/ActorSettingsWidget.h"
+
 #include "ActorSettings.generated.h"
 
 UCLASS()
@@ -24,6 +27,7 @@ public:
 
 	void ApplyChanges();
 	
+	UPROPERTY()
 	UActorSettingsWidget* Widget;
 
 	UPROPERTY()

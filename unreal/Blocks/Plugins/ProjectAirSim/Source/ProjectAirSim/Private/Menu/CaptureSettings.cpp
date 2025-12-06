@@ -114,11 +114,12 @@ bool UCaptureSettings::LoadMotionBlurAmount()
 
 void UCaptureSettings::PopulateGUI()
 {
-	if (Widget->ImageTypeDisplay) Widget->ImageTypeDisplay->SetText(FText::AsNumber(ImageType));
-	if (Widget->FOVDegreesDisplay) Widget->FOVDegreesDisplay->SetText(FText::AsNumber(FOVDegrees));
-	if (Widget->WidthDisplay) Widget->WidthDisplay->SetText(FText::AsNumber(Width));
-	if (Widget->HeightDisplay) Widget->HeightDisplay->SetText(FText::AsNumber(Height));
-	if (Widget->MotionBlurAmountDisplay) Widget->MotionBlurAmountDisplay->SetText(FText::AsNumber(MotionBlurAmount));
+	if (Widget->ImageTypeText) Widget->ImageTypeText->SetText(FText::FromString(FString::FromInt(ImageType)));
+	if (Widget->FOVDegreesTextBox) Widget->FOVDegreesTextBox->SetText(FText::FromString(FString::SanitizeFloat(FOVDegrees)));
+	if (Widget->WidthTextBox) Widget->WidthTextBox->SetText(FText::FromString(FString::FromInt(Width)));
+	if (Widget->HeightTextBox) Widget->HeightTextBox->SetText(FText::FromString(FString::FromInt(Height)));
+	if (MotionBlurAmount == -1.f) Widget->MotionBlurAmountContainer->SetVisibility(ESlateVisibility::Collapsed);
+	else if (Widget->MotionBlurAmountTextBox) Widget->MotionBlurAmountTextBox->SetText(FText::FromString(FString::SanitizeFloat(MotionBlurAmount)));
 }
 
 void UCaptureSettings::ApplyChanges()

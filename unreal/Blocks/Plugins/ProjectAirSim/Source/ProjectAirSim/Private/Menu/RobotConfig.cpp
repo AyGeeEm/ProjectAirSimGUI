@@ -39,7 +39,9 @@ bool URobotConfig::LoadSensors()
 
 void URobotConfig::PopulateGUI()
 {
-	Widget->FileNameDisplay->SetText(FText::FromString(FileName));
+	Widget->FileNameText->SetText(FText::FromString(FileName));
+
+	Widget->SensorSettingsContainer->ClearChildren();
 
 	for (auto Sensor : Sensors) 
 	{

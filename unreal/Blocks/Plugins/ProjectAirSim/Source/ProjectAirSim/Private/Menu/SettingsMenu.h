@@ -9,8 +9,8 @@
 #include "Menu/RobotConfigWidget.h"
 #include "Components/EditableTextBox.h"
 #include "Components/Button.h"
-#include "SettingsMenu.generated.h"
 
+#include "SettingsMenu.generated.h"
 
 UCLASS()
 class USettingsMenu : public UUserWidget
@@ -21,6 +21,8 @@ public:
 
 	virtual void NativeConstruct() override;
 
+	virtual void BeginDestroy() override;
+
 	void OnFileSelected(const FString& FileName);
 
 	bool ValidateFile(const FString& FileName);
@@ -30,6 +32,15 @@ public:
 	bool LoadRobotConfig(const FString& FileName);
 	
 	bool PopulateGUI();
+
+	UFUNCTION()
+	void SetActivatePath();
+
+	UFUNCTION()
+	void SelectPythonScript();
+
+	UFUNCTION()
+	void LoadSelectedPythonScript();
 
 	UFUNCTION()
 	void ApplyChanges();
@@ -46,8 +57,12 @@ public:
 	TSubclassOf<URobotConfigWidget> RobotConfigWidgetClass;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* SceneConfigFileNameDisplay;
+    UTextBlock* SceneConfigFileNameText;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* PythonScriptNameText;
+
+	UPROPERTY()
 	USceneConfig* SceneConfig;
 
 private:
@@ -59,16 +74,19 @@ private:
 	FString VirtualEnvActivatePath;
 
 	UPROPERTY(meta = (BindWidget))
+    UVerticalBox* LoadedScriptOptionsContainer;
+
+	UPROPERTY(meta = (BindWidget))
     UVerticalBox* ActorSettingsContainer;
 
 	UPROPERTY(meta = (BindWidget))
     UVerticalBox* RobotConfigContainer;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* PythonScriptNameDisplay;
+	UButton* SetActivateButton;
 
 	UPROPERTY(meta = (BindWidget))
-    UButton* SaveButton;
+	UButton* LoadScriptButton;
 
 	UPROPERTY(meta = (BindWidget))
     UButton* RunScriptButton;

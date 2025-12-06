@@ -8,22 +8,42 @@ void USettingsMenu::NativeConstruct()
 {
     Super::NativeConstruct();
 
-    ConfigFolderPath = TEXT("../../client/python/example_user_scripts/sim_config/"); //this path only works for those building from source
-    ScriptFolderPath = TEXT("C:\\Lee\\Repos\\AirSim\\ProjectAirSim\\client\\python\\example_user_scripts\\"); //REPLACE WITH YOURS
-    PythonScriptName = TEXT("camera_pose.py");
-    VirtualEnvActivatePath = TEXT("C:\\Lee\\Repos\\AirSim\\airsim-venv\\Scripts\\activate"); //SAME HERE
+    ConfigFolderPath = "";
+    ScriptFolderPath = "";
+    PythonScriptName = "";
+    VirtualEnvActivatePath = "";
 
     if (!IsDesignTime())
     {
-        if (SaveButton) SaveButton->OnClicked.AddDynamic(this, &USettingsMenu::ApplyChanges);
+        if (SetActivateButton) SetActivateButton->OnClicked.AddDynamic(this, &USettingsMenu::SetActivatePath);
+        if (LoadScriptButton) LoadScriptButton->OnClicked.AddDynamic(this, &USettingsMenu::SelectPythonScript);
         if (RunScriptButton) RunScriptButton->OnClicked.AddDynamic(this, &USettingsMenu::RunScript);
-        
-        OnFileSelected(PythonScriptName);
     }
+}
+
+void USettingsMenu::BeginDestroy()
+{
+    if (FPlatformProcess::IsProcRunning(CurrentPythonProcess)) FPlatformProcess::TerminateProc(CurrentPythonProcess, true);
+    Super::BeginDestroy();
+}
+
+void USettingsMenu::SetActivatePath()
+{
+    VirtualEnvActivatePath = "C:\\Lee\\Repos\\AirSim\\airsim-venv\\Scripts\\activate";
+    LoadScriptButton->SetVisibility(ESlateVisibility::Visible);
+}
+
+void USettingsMenu::SelectPythonScript()
+{
+    ConfigFolderPath = TEXT("../../client/python/example_user_scripts/sim_config/");
+    ScriptFolderPath = TEXT("C:\\Lee\\Repos\\AirSim\\ProjectAirSim\\client\\python\\example_user_scripts\\");
+    OnFileSelected("hello_drone.py");
 }
 
 void USettingsMenu::RunScript()
 {
+
+    ApplyChanges();
 
     IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 
@@ -62,23 +82,7 @@ void USettingsMenu::OnFileSelected(const FString& FileName)
 
     PythonScriptName = FileName;
     
-    FString SceneConfigFileName;
-    if (!UJsonManager::ExtractSceneConfigFromPython(ScriptFolderPath + PythonScriptName, SceneConfigFileName))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Could not extract scene config file."));
-        return;
-    }
-
-
-    if (!LoadSceneConfig(SceneConfigFileName))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Failed to load scene config file: %s"), *(SceneConfigFileName));
-    }
-
-    if (!PopulateGUI())
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Failed to populate GUI."));
-    }
+    LoadSelectedPythonScript();
 }
 
 bool USettingsMenu::ValidateFile(const FString& FileName)
@@ -102,6 +106,33 @@ bool USettingsMenu::ValidateFile(const FString& FileName)
         UE_LOG(LogTemp, Warning, TEXT("File not found: %s"), *(ScriptFolderPath + FileName));
         return false;
     }
+}
+
+void USettingsMenu::LoadSelectedPythonScript()
+{
+    LoadedScriptOptionsContainer->SetVisibility(ESlateVisibility::Collapsed);
+
+    FString SceneConfigFileName;
+    if (!UJsonManager::ExtractSceneConfigFromPython(ScriptFolderPath + PythonScriptName, SceneConfigFileName))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Could not extract scene config file."));
+        return;
+    }
+
+
+    if (!LoadSceneConfig(SceneConfigFileName))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load scene config file: %s"), *(SceneConfigFileName));
+        return;
+    }
+
+    if (!PopulateGUI())
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to populate GUI."));
+        return;
+    }
+
+    LoadedScriptOptionsContainer->SetVisibility(ESlateVisibility::Visible);
 }
 
 bool USettingsMenu::LoadSceneConfig(const FString& FileName) 
@@ -146,14 +177,14 @@ bool USettingsMenu::LoadRobotConfig(const FString& FileName)
 }
 
 bool USettingsMenu::PopulateGUI() 
-{
-    if (PythonScriptNameDisplay)
+{   
+    if (PythonScriptNameText)
     {
-        PythonScriptNameDisplay->SetIsReadOnly(true);
-        PythonScriptNameDisplay->SetIsEnabled(false);
-        PythonScriptNameDisplay->SetText(FText::FromString(PythonScriptName));
+        PythonScriptNameText->SetText(FText::FromString("Run " + PythonScriptName));
     }
-    
+
+    ActorSettingsContainer->ClearChildren();
+    RobotConfigContainer->ClearChildren();
 
     for (int i = 0; i < SceneConfig->Actors.Num(); i++)
     {
@@ -164,6 +195,20 @@ bool USettingsMenu::PopulateGUI()
         if (SceneConfig->Actors[i]->RobotConfig->Widget == nullptr)
         {
             SceneConfig->Actors[i]->RobotConfig->Widget = CreateWidget<URobotConfigWidget>(this, RobotConfigWidgetClass);
+        }
+
+        bool ContainsWidget = false;
+
+        for (UWidget* Widget : RobotConfigContainer->GetAllChildren())
+        {
+            if (Widget == SceneConfig->Actors[i]->RobotConfig->Widget)
+            {
+                ContainsWidget = true;
+                break;
+            }
+        }
+        if (!ContainsWidget)
+        {
             RobotConfigContainer->AddChild(SceneConfig->Actors[i]->RobotConfig->Widget);
         }
     }

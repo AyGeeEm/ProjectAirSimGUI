@@ -16,28 +16,32 @@ public:
 	void Init(USensorSettings* OwnerIn);
 
 	UFUNCTION()
-	void CommitID(const FText& Text, ETextCommit::Type CommitType);
-	UFUNCTION()
 	void CommitType(const FText& Text, ETextCommit::Type CommitType);
 	UFUNCTION()
-	void CommitEnabled(const FText& Text, ETextCommit::Type CommitType);
+	void CommitEnabled(bool bIsChecked);
 	UFUNCTION()
 	void CommitCaptureInterval(const FText& Text, ETextCommit::Type CommitType);
+	
+	UPROPERTY(meta = (BindWidget))
+    UTextBlock* IDText;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* IDDisplay;
+    UEditableTextBox* TypeTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* TypeDisplay;
+    UCheckBox* EnabledCheckBox;
+	
+	UPROPERTY(meta = (BindWidget))
+    UEditableTextBox* CaptureIntervalTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* EnabledDisplay;
-
-	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* CaptureIntervalDisplay;
+    UVerticalBox* CaptureIntervalContainer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Capture Settings")
 	TSubclassOf<UCaptureSettingsWidget> CaptureSettingsWidgetClass;
+
+	UPROPERTY(meta = (BindWidget))
+    UExpandableArea* EACaptureSettings;
 
 	UPROPERTY(meta = (BindWidget))
     UVerticalBox* CaptureSettingsContainer;

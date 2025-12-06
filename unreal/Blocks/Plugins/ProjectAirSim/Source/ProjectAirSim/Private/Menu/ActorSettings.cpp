@@ -133,17 +133,17 @@ bool UActorSettings::LoadRobotConfig()
 
 void UActorSettings::PopulateGUI()
 {
-	Widget->NameDisplay->SetText(FText::FromString(Name));
-
-	Widget->XDisplay->SetText(FText::AsNumber(XYZ.X));
-	Widget->YDisplay->SetText(FText::AsNumber(XYZ.Y));
-	Widget->ZDisplay->SetText(FText::AsNumber(XYZ.Z));
-
-	Widget->RollDisplay->SetText(FText::AsNumber(RPYDeg.X));
-	Widget->PitchDisplay->SetText(FText::AsNumber(RPYDeg.Y));
-	Widget->YawDisplay->SetText(FText::AsNumber(RPYDeg.Z));
+	Widget->NameText->SetText(FText::FromString(Name));
 	
-	Widget->RobotConfigNameDisplay->SetText(FText::FromString(RobotConfig->FileName));
+	Widget->XTextBox->SetText(FText::FromString(FString::SanitizeFloat(XYZ.X)));
+	Widget->YTextBox->SetText(FText::FromString(FString::SanitizeFloat(XYZ.Y)));
+	Widget->ZTextBox->SetText(FText::FromString(FString::SanitizeFloat(XYZ.Z)));
+
+	Widget->RollTextBox->SetText(FText::FromString(FString::SanitizeFloat(RPYDeg.X)));
+	Widget->PitchTextBox->SetText(FText::FromString(FString::SanitizeFloat(RPYDeg.Y)));
+	Widget->YawTextBox->SetText(FText::FromString(FString::SanitizeFloat(RPYDeg.Z)));
+	
+	Widget->RobotConfigNameTextBox->SetText(FText::FromString(RobotConfig->FileName));
 
 	RobotConfig->PopulateGUI();
 }

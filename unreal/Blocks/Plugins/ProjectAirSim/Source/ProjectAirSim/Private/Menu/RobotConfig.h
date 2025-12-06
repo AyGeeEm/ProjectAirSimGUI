@@ -3,6 +3,7 @@
 #include "Menu/JsonManager.h"
 #include "Menu/SensorSettings.h"
 #include "Menu/RobotConfigWidget.h"
+
 #include "RobotConfig.generated.h"
 
 UCLASS()
@@ -21,6 +22,7 @@ public:
 
 	void ApplyChanges();
 
+	UPROPERTY()
 	URobotConfigWidget* Widget;
 
 	UPROPERTY()

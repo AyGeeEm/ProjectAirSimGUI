@@ -15,8 +15,6 @@ public:
 	void Init(UActorSettings* OwnerIn);
 
 	UFUNCTION()
-	void CommitName(const FText& Text, ETextCommit::Type CommitType);
-	UFUNCTION()
 	void CommitX(const FText& Text, ETextCommit::Type CommitType);
 	UFUNCTION()
 	void CommitY(const FText& Text, ETextCommit::Type CommitType);
@@ -30,28 +28,28 @@ public:
 	void CommitYaw(const FText& Text, ETextCommit::Type CommitType);
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* NameDisplay;
+    UTextBlock* NameText;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* XDisplay;
+    UEditableTextBox* XTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* YDisplay;
+    UEditableTextBox* YTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* ZDisplay;
+    UEditableTextBox* ZTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* RollDisplay;
+    UEditableTextBox* RollTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* PitchDisplay;
+    UEditableTextBox* PitchTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* YawDisplay;
+    UEditableTextBox* YawTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* RobotConfigNameDisplay;
+    UEditableTextBox* RobotConfigNameTextBox;
 
 private:
 

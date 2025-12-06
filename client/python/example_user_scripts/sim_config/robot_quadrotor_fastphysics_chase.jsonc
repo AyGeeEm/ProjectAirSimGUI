@@ -358,17 +358,17 @@
 	],
 	"sensors": [
 		{
-			"id": "Chase1",
+			"id": "Chase",
 			"type": "camera",
 			"enabled": true,
 			"parent-link": "Frame",
-			"capture-interval": 0.030999999493360519,
+			"capture-interval": 0.03,
 			"capture-settings": [
 				{
 					"image-type": 0,
-					"width": 1281,
-					"height": 721,
-					"fov-degrees": 90.099998474121094,
+					"width": 1280,
+					"height": 720,
+					"fov-degrees": 90,
 					"capture-enabled": true,
 					"streaming-enabled": true,
 					"pixels-as-float": false,

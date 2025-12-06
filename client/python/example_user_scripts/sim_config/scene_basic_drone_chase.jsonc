@@ -3,11 +3,11 @@
 	"actors": [
 		{
 			"type": "robot",
-			"name": "Drone11",
+			"name": "Drone1",
 			"origin":
 			{
-				"xyz": "0.100000 2.510000 -19.100000",
-				"rpy-deg": "0.100000 0.100000 0.100000"
+				"xyz": "0.000000 2.500000 -19.000000",
+				"rpy-deg": "0.000000 0.000000 0.000000"
 			},
 			"robot-config": "robot_quadrotor_fastphysics_chase.jsonc"
 		}

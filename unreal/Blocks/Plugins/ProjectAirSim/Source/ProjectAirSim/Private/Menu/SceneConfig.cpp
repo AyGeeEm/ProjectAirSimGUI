@@ -39,11 +39,9 @@ bool USceneConfig::LoadActors()
 
 void USceneConfig::PopulateGUI() 
 {
-	if (Menu->SceneConfigFileNameDisplay)
+	if (Menu->SceneConfigFileNameText)
     {
-        Menu->SceneConfigFileNameDisplay->SetIsReadOnly(true);
-        Menu->SceneConfigFileNameDisplay->SetIsEnabled(false);
-        Menu->SceneConfigFileNameDisplay->SetText(FText::FromString(FileName));
+        Menu->SceneConfigFileNameText->SetText(FText::FromString(FileName));
     }
 
 	for (auto Actor : Actors) 

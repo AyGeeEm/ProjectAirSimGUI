@@ -12,7 +12,7 @@ class URobotConfigWidget : public UUserWidget
 public:
 
 	UPROPERTY(meta = (BindWidget))
-    UEditableTextBox* FileNameDisplay;
+    UTextBlock* FileNameText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Sensors")
 	TSubclassOf<USensorSettingsWidget> SensorSettingsWidgetClass;

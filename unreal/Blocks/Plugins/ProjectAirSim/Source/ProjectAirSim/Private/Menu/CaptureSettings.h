@@ -1,7 +1,9 @@
 #pragma once
+
 #include "CoreMinimal.h"
 #include "Menu/JsonManager.h"
 #include "Menu/CaptureSettingsWidget.h"
+
 #include "CaptureSettings.generated.h"
 
 class USettingsMenu;
@@ -26,6 +28,7 @@ public:
     bool LoadHeight();
     bool LoadMotionBlurAmount();  
 
+	UPROPERTY()
 	UCaptureSettingsWidget* Widget;
 
 	UPROPERTY()
